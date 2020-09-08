@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.开始ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.自动连接ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.手动连接ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MainTimer = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,16 +59,21 @@
             // 自动连接ToolStripMenuItem
             // 
             this.自动连接ToolStripMenuItem.Name = "自动连接ToolStripMenuItem";
-            this.自动连接ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.自动连接ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.自动连接ToolStripMenuItem.Text = "自动连接";
             this.自动连接ToolStripMenuItem.Click += new System.EventHandler(this.自动连接ToolStripMenuItem_Click);
             // 
             // 手动连接ToolStripMenuItem
             // 
             this.手动连接ToolStripMenuItem.Name = "手动连接ToolStripMenuItem";
-            this.手动连接ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.手动连接ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.手动连接ToolStripMenuItem.Text = "手动连接";
             this.手动连接ToolStripMenuItem.Click += new System.EventHandler(this.手动连接ToolStripMenuItem_Click);
+            // 
+            // MainTimer
+            // 
+            this.MainTimer.Enabled = true;
+            this.MainTimer.Tick += new System.EventHandler(this.MainTimer_Tick);
             // 
             // DataAgentForm
             // 
@@ -90,6 +97,7 @@
         private System.Windows.Forms.ToolStripMenuItem 开始ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 自动连接ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 手动连接ToolStripMenuItem;
+        private System.Windows.Forms.Timer MainTimer;
     }
 }
 

@@ -16,80 +16,90 @@ namespace DataAgent
 {
     public partial class DataAgentForm : Form
     {
-        //#region 配置文件声明变量
-        ///// <summary>
-        ///// 写入INI文件
-        ///// </summary>
-        ///// <param name="section">节点名称[如[TypeName]]</param>
-        ///// <param name="key">键</param>
-        ///// <param name="val">值</param>
-        ///// <param name="filepath">文件路径</param>
-        ///// <returns></returns>
-        //[DllImport("kernel32")]
-        //private static extern long WritePrivateProfileString(string section, string key, string val, string filepath);
-        ///// <summary>
-        ///// 读取INI文件
-        ///// </summary>
-        ///// <param name="section">节点名称</param>
-        ///// <param name="key">键</param>
-        ///// <param name="def">值</param>
-        ///// <param name="retval">stringbulider对象</param>
-        ///// <param name="size">字节大小</param>
-        ///// <param name="filePath">文件路径</param>
-        ///// <returns></returns>
-        //[DllImport("kernel32")]
-        //private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retval, int size, string filePath);
-        //private string strFilePath = Application.StartupPath + "\\FileConfig.ini";//获取INI文件路径
-        //private string strSec = ""; //INI文件名
-        //#endregion
 
-        //#region 配置文件读取
-        ///// <summary>
-        ///// 自定义读取INI文件中的内容方法
-        ///// </summary>
-        ///// <param name="Section">键</param>
-        ///// <param name="key">值</param>
-        ///// <returns></returns>
-        //private string ContentValue(string Section, string key)
-        //{
-
-        //    StringBuilder temp = new StringBuilder(1024);
-        //    GetPrivateProfileString(Section, key, "", temp, 1024, strFilePath);
-        //    return temp.ToString();
-        //}
-        //#endregion
-
-        private string strFilePath = Application.StartupPath + "\\FileConfig.ini";//获取INI文件路径
-        private string strSec = ""; //INI文件名
-        SyntecRemoteCNC m_cnc;
+        private string strFilePath = Application.StartupPath + "\\FileConfig.ini";//ini配置文件必须放在当前文件夹下
+        private string strFileName = ""; //INI文件名
+        int[] defaultR220 = new int[5] { 0, 0, 0, 0, 0 };
+        int[] R220 = new int[5];
+        private List<string> availableSensorList;
+        SyntecRemoteCNC cnc;//cnc系统连接变量
 
         public DataAgentForm()
         {
             InitializeComponent();
+            availableSensorList = new List<string>();
+            MainTimer.Enabled = false;
         }
-
-
-
 
         private void 自动连接ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //
             string cncIP;
-            strSec = Path.GetFileNameWithoutExtension(strFilePath);
-            cncIP = SettingIO.ContentValue(strSec, "CNC_IP");
-            m_cnc = new SyntecRemoteCNC(cncIP);
-            if (!m_cnc.isConnected())
+            strFileName = Path.GetFileNameWithoutExtension(strFilePath);
+            cncIP = SettingIO.ContentValue(strFilePath, strFileName, "CNC_IP");
+            cnc = new SyntecRemoteCNC(cncIP);
+            if (!cnc.isConnected())
             {
                 MessageBox.Show("CNC Connection Error!");
+            }
+            else
+            {
+                availableSensorList = SelfCheck();
+                if (availableSensorList.Count > 0)
+                {
+                    MainTimer.Enabled = true;
+                }
             }
 
         }
 
         private void 手动连接ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ManualConnect manuakConnect = new ManualConnect();
-            manuakConnect.ShowDialog();
+            ManualConnect manualConnect = new ManualConnect();
+            manualConnect.ShowDialog();
             自动连接ToolStripMenuItem_Click(sender, e);
+        }
+
+        private void MainTimer_Tick(object sender, EventArgs e)
+        {
+            cnc.READ_plc_register(220, 224, out R220);
+            if (R220[0] == 1)
+            {
+                StartAllAvailableSensor(availableSensorList);
+                cnc.WRITE_plc_register(220, 224, defaultR220);
+            }
+            else if (R220[1] == 1)
+            {
+                StopAllAvailableSensor(availableSensorList);
+                cnc.WRITE_plc_register(220, 224, defaultR220);
+            }
+        }
+
+        /// <summary>
+        /// 自检程序，确定可用的传感器
+        /// </summary>
+        /// <returns>可用传感器列表</returns>
+        private List<string> SelfCheck()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// 打开所有可用传感器的采集功能
+        /// </summary>
+        /// <param name="availableSensorList">可用传感器列表</param>
+        private void StartAllAvailableSensor(List<string> availableSensorList)
+        {
+
+        }
+
+        /// <summary>
+        /// 保存数据并停止所有可用传感器的采集功能
+        /// </summary>
+        /// <param name="availableSensorList">可用传感器列表</param>
+        private void StopAllAvailableSensor(List<string> availableSensorList)
+        {
+
         }
     }
 }

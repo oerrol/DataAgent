@@ -34,23 +34,22 @@ namespace DataAgent
         /// <returns></returns>
         [DllImport("kernel32")]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retval, int size, string filePath);
-        private static string strFilePath = AppDomain.CurrentDomain.BaseDirectory + "FileConfig.ini";//获取INI文件路径
-        private string strSec = ""; //INI文件名
         #endregion
 
         #region 配置文件读取
         /// <summary>
         /// 自定义读取INI文件中的内容方法
         /// </summary>
-        /// <param name="Section">键</param>
-        /// <param name="key">值</param>
-        /// <returns></returns>
-        static public string ContentValue(string Section, string key)
+        /// <param name="filePath">文件路径</param>
+        /// <param name="fileName">文件名</param>
+        /// <param name="key">键</param>
+        /// <returns>键值</returns>
+        static public string ContentValue(string filePath, string fileName, string key)
         {
-            if (File.Exists(strFilePath))//读取时先要判读INI文件是否存在
+            if (File.Exists(filePath))//读取时先要判读INI文件是否存在
             {
                 StringBuilder temp = new StringBuilder(1024);
-                GetPrivateProfileString(Section, key, "", temp, 1024, strFilePath);
+                GetPrivateProfileString(fileName, key, "", temp, 1024, filePath);
                 return temp.ToString();
             }
             else
@@ -64,14 +63,15 @@ namespace DataAgent
         /// <summary>
         /// 自定义读取INI文件中的内容方法
         /// </summary>
-        /// <param name="Section">键</param>
-        /// <param name="key">值</param>
-        /// <returns></returns>
-        static public void ContentWrite(string Section, string key, string value)
+        /// <param name="filePath">文件路径</param>
+        /// <param name="fileName">文件名</param>
+        /// <param name="key">键</param>
+        /// <param name="value">键值</param>
+        static public void ContentWrite(string filePath, string fileName, string key, string value)
         {
-            if (File.Exists(strFilePath))//读取时先要判读INI文件是否存在
+            if (File.Exists(filePath))//读取时先要判读INI文件是否存在
             {
-                WritePrivateProfileString(Section, key, value, strFilePath);
+                WritePrivateProfileString(fileName, key, value, filePath);
             }
             else
             {

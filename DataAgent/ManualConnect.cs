@@ -15,17 +15,18 @@ namespace DataAgent
     public partial class ManualConnect : Form
     {
         private string strFilePath = Application.StartupPath + "\\FileConfig.ini";//获取INI文件路径
-        private string strSec = ""; //INI文件名
+        private string strFileName = ""; //INI文件名
         bool textBoxValid = true;
         public ManualConnect()
         {
             InitializeComponent();
                 string cncIP;
-                strSec = Path.GetFileNameWithoutExtension(strFilePath);
-                cncIP = SettingIO.ContentValue(strSec, "CNC_IP");
+                strFileName = Path.GetFileNameWithoutExtension(strFilePath);
+                cncIP = SettingIO.ContentValue(strFilePath, strFileName, "CNC_IP");
                 setIpAddress1(cncIP);
         }
 
+        #region 确保IP地址输入合法
         private void textBoxOnTextChanged(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -91,6 +92,7 @@ namespace DataAgent
                 }
             }
         }
+        #endregion
 
         #region IPAddress1 textBox
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -212,17 +214,13 @@ namespace DataAgent
             }
             catch { }
         }
-
-
-
-
         #endregion
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (ipAddress1NotNull())
             {
-                SettingIO.ContentWrite(strSec, "CNC_IP", ipAddress1String());
+                SettingIO.ContentWrite(strFilePath, strFileName, "CNC_IP", ipAddress1String());
             }
             Close();
         }
