@@ -44,6 +44,10 @@ namespace DataAgent
             }
             else
             {
+                label_mainDevStatus.Text = "已连接";
+                label_mainDevStatus.Image = Properties.Resources.green_128;
+                label_workingStatus.Text = "未起弧";
+                label_workingStatus.Image = Properties.Resources.green_128;
                 availableSensorList = SelfCheck();
                 if (availableSensorList.Count > 0)
                 {
@@ -90,7 +94,8 @@ namespace DataAgent
         /// <param name="availableSensorList">可用传感器列表</param>
         private void StartAllAvailableSensor(List<string> availableSensorList)
         {
-
+            label_workingStatus.Text = "起弧中";
+            label_workingStatus.Image = Properties.Resources.red_128;
         }
 
         /// <summary>
@@ -99,7 +104,8 @@ namespace DataAgent
         /// <param name="availableSensorList">可用传感器列表</param>
         private void StopAllAvailableSensor(List<string> availableSensorList)
         {
-
+            label_workingStatus.Text = "未起弧";
+            label_workingStatus.Image = Properties.Resources.green_128;
         }
     }
 }
